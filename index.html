@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+</head>
+<body>
+  <div>
+    <input type="text" oninput="onChange(this)" value="">
+    <div id="question"></div>
+    <div id="answer"></div>
+  </div>
+  <script>
+    // Get questions and answers from website
+    // Array.from(questions).map(
+    //   (question) => {
+    //     return {
+    //       question: question.getElementsByClassName('qtext')[0].innerText.replace('\n', ''),
+    //       answers: Array.from(question.getElementsByClassName('answer')[0].getElementsByClassName('d-flex')).map(a => a.innerText.replace('\n', '')),
+    //       result: question.getElementsByClassName('correct')[0] ? question.getElementsByClassName('correct')[0].innerText.replace('\n', '') + ' (Đúng)' : question.getElementsByClassName('incorrect')[0].innerText.replace('\n', '') + ' (Sai)'
+    //     }
+    //   }
+    // )
+    var test = [
+      {
+          "question": "Loại hình tấn công nào sau đây không phải là tấn công chủ động?",
+          "answers": [
+              "a.Tấn công từ chối dịch vụ (DoS)",
+              "b.Tấn công giả mạo (masquerade)",
+              "c.Tấn công Replay",
+              "d.Tấn công nghe lén (eavesdropping)"
+          ],
+          "result": "d.Tấn công nghe lén (eavesdropping) (Đúng)"
+      },
+      {
+          "question": "Biết rằng Audit/Auditing (kiểm tra, kiểm toán) thường dùng trong đảm bảo an toàn cho cơ sở dữ liệu. Chức năng này dùng để trả lời cho câu hỏi nào sau đây?",
+          "answers": [
+              "a.B và C đúng.",
+              "b.Ai đã làm gì?",
+              "c.Ai được làm gì?",
+              "d.Đó là ai?"
+          ],
+          "result": "c.Ai được làm gì? (Sai)"
+      },
+      {
+          "question": "Lựa chọn nào sau đây không phải là chức năng của một phần mềm ngăn chặn hành vi thường gặp?",
+          "answers": [
+              "a.Chia sẻ dữ liệu và thông tin hệ thống bị lây nhiễm",
+              "b.Theo dõi tham số hệ thống",
+              "c.Phát hiện code có hại trước khi chúng được thực thi",
+              "d.Theo dõi hệ thống theo thời gian thực"
+          ],
+          "result": "a.Chia sẻ dữ liệu và thông tin hệ thống bị lây nhiễm (Đúng)"
+      },
+      {
+          "question": "Thông tin nào sau đây không đúng về mật khẩu OTP?",
+          "answers": [
+              "a.OTP có thời hạn sử dụng",
+              "b.OTP chỉ được sử dụng một lần",
+              "c.OTP an toàn tuyệt đối",
+              "d.OTP được sinh ngẫu nhiên"
+          ],
+          "result": "c.OTP an toàn tuyệt đối (Đúng)"
+      },
+      {
+          "question": "Mã hóa RSA là thuật toán mã hóa:",
+          "answers": [
+              "a.Không sử dụng được cho SSL, HTTPs",
+              "b.Đối xứng",
+              "c.Chỉ sử dụng private key",
+              "d.Công khai"
+          ],
+          "result": "d.Công khai (Đúng)"
+      },
+      {
+          "question": "Dấu thời gian (Timestamp) thường đước dùng để:",
+          "answers": [
+              "a.Ghi nhật ký sự kiện hoặc trong chuỗi sự kiện (SOE)",
+              "b.Tất cả đều đúng",
+              "c.Chỉ ra thời gian cho biết lần cuối tệp được sửa đổi",
+              "d.Xác định thời gian hết hạn"
+          ],
+          "result": "d.Xác định thời gian hết hạn (Sai)"
+      },
+      {
+          "question": "Phát biểu nào sau đây là đúng vè mã khóa công khai?",
+          "answers": [
+              "a.Chỉ cần dùng một khóa có thể mã hóa và giải mã dữ liệu",
+              "b.Người ta sử dụng public key để giải mã dữ liệu",
+              "c.Tất cả đều không đúng",
+              "d.Dùng một khóa để mã hóa dữ liệu, một khóa để giải mã"
+          ],
+          "result": "d.Dùng một khóa để mã hóa dữ liệu, một khóa để giải mã (Đúng)"
+      },
+      {
+          "question": "Loại hình tấn công nào sau đây không thực hiện được với RSA?",
+          "answers": [
+              "a.Tấn công dựa trên thời gian",
+              "b.Tấn công chọn sẵn plaintext",
+              "c.Tấn công brute force",
+              "d.Tấn công bằng toán học như sử dụng định lý Fermat"
+          ],
+          "result": "b.Tấn công chọn sẵn plaintext (Đúng)"
+      },
+      {
+          "question": "Phát biểu nào sau đây không đúng về hàm băm?",
+          "answers": [
+              "a.Kết quả nhận được sẽ thay đổi tùy theo nội dung bản tin được băm",
+              "b.Dùng để tạo các password dictionaries",
+              "c.Kích thước kết quả nhận được phụ thuộc vào độ lớn bản tin",
+              "d.Vẫn có trường hợp trùng khớp giá trị băm của hai khối dữ liệu khác nhau"
+          ],
+          "result": "c.Kích thước kết quả nhận được phụ thuộc vào độ lớn bản tin (Đúng)"
+      },
+      {
+          "question": "Loại mã hóa nào sau đây không được xem là mã hóa cổ điển:",
+          "answers": [
+              "a.Mã hóa Affine",
+              "b.Mã hóa dịch vòng",
+              "c.Mã hóa thay thế",
+              "d.Mã hóa Shannon"
+          ],
+          "result": "d.Mã hóa Shannon (Đúng)"
+      },
+      {
+          "question": "Chính sách tài khoản (GPO) nào sau đây giúp hạn chế tấn công phá hoại tài khoản người dùng?",
+          "answers": [
+              "a.Giới hạn số lần logon",
+              "b.Xác định ngày hết hạn tài khoản",
+              "c.Disable tài khoản",
+              "d.Hạn chế thời gian đăng nhập"
+          ],
+          "result": "a.Giới hạn số lần logon (Đúng)"
+      },
+      {
+          "question": "Mật khẩu nào sau đây là an toàn?",
+          "answers": [
+              "a.Hell0",
+              "b.Administr@tor",
+              "c.SeeY0uN3xtYe@r!",
+              "d.password123"
+          ],
+          "result": "c.SeeY0uN3xtYe@r! (Đúng)"
+      },
+      {
+          "question": "Tập tin nào sau đây có khả năng chứa mã độc hơn cả?",
+          "answers": [
+              "a.user32.dll",
+              "b.cam_mo_ra.txt.txt",
+              "c.khong_duoc_mo.dat",
+              "d.nguoi_yeu_be_nho.exe.gif"
+          ],
+          "result": "a.user32.dll (Sai)"
+      },
+      {
+          "question": "Một quản trị viên theo dõi và kiểm định những bản ghi trên máy chủ và nhận thấy hệ thống có khả năng đang bị đe dọa bảo mật. Sự kiện nào sau đây chỉ ra điều đó?",
+          "answers": [
+              "a.Tài khoản Administrator nhiều lần đăng nhập thành công sau đúng 120 phút",
+              "b.Hơn một trăm lệnh in ấn được gửi đến một máy in cụ thể ở phòng tài chính",
+              "c.Xuất hiện một số ứng dụng chưa được duyệt trên tài khoản vài nhân viên",
+              "d.Nhiều lần đăng nhập không thành công trong ngày với tài khoản \"ltduc\""
+          ],
+          "result": "a.Tài khoản Administrator nhiều lần đăng nhập thành công sau đúng 120 phút (Sai)"
+      },
+      {
+          "question": "Kết nối Internet nào sau đây chứa đựng nhiều rủi ro bảo mật?",
+          "answers": [
+              "a.ADSL",
+              "b.Dial-up",
+              "c.FTTH",
+              "d.Wireless"
+          ],
+          "result": "d.Wireless (Đúng)"
+      },
+      {
+          "question": "Phương thức truy cập từ xa nào sau đây có tính bảo mật cao hơn telnet?",
+          "answers": [
+              "a.SSL",
+              "b.SSH",
+              "c.VPN",
+              "d.IPSec"
+          ],
+          "result": "b.SSH (Đúng)"
+      },
+      {
+          "question": "Người ta thường sử dụng máy chủ RADIUS server để làm gì?",
+          "answers": [
+              "a.Xác thực thông tin",
+              "b.Mã hóa dữ liệu",
+              "c.Cân bằng tải",
+              "d.Điều khiển kết nối"
+          ],
+          "result": "a.Xác thực thông tin (Đúng)"
+      },
+      {
+          "question": "Giao thức nào sau đây hiện nay thường dùng cho mạng Wi-Fi ở các hộ gia đình?",
+          "answers": [
+              "a.802.11ax",
+              "b.802.11h",
+              "c.802.3",
+              "d.802.11n"
+          ],
+          "result": "d.802.11n (Đúng)"
+      },
+      {
+          "question": "Giao thức nào sau đây làm việc trên nền IP để bảo vệ gói tin IP trong mạng?",
+          "answers": [
+              "a.IPX",
+              "b.TACACS+",
+              "c.IPSec",
+              "d.SSH"
+          ],
+          "result": "c.IPSec (Đúng)"
+      },
+      {
+          "question": "Phát biểu nào sau đây là đúng về bộ lọc địa chỉ MAC trong các router wi-fi?",
+          "answers": [
+              "a.Ngăn chặn truy cập từ một địa chỉ MAC nhất định",
+              "b.Cho phép truy cập từ một địa chỉ IP nhất định",
+              "c.Hoạt động hiệu quả nhưng cần phải cấu hình kèm địa chỉ IP bị chặn",
+              "d.Chỉ có thể ngăn chặn truy cập chứ không thể cấp phép truy cập theo địa chỉ MAC"
+          ],
+          "result": "a.Ngăn chặn truy cập từ một địa chỉ MAC nhất định (Đúng)"
+      },
+      {
+          "question": "Thông thường ở các doanh nghiệp lớn thường triển khai hệ thống IDS để nâng tính an toàn cho hệ thống mạng. Vậy IDS là gì?",
+          "answers": [
+              "a.Hệ thống tường lửa",
+              "b.Hệ thống phát hiện xâm nhập",
+              "c.Hệ thống tối ưu hiệu suất máy chủ RADIUS",
+              "d.Hệ thống phân tích mã độc"
+          ],
+          "result": "b.Hệ thống phát hiện xâm nhập (Đúng)"
+      },
+      {
+          "question": "Vùng có dấu ? trong hình là vùng gì?",
+          "answers": [
+              "a.Servers",
+              "b.Intranet",
+              "c.DMZ",
+              "d.IDS"
+          ],
+          "result": "c.DMZ (Đúng)"
+      },
+      {
+          "question": "Để chuyển từ địa chỉ private IP sang public IP người ta dùng:",
+          "answers": [
+              "a.VPN",
+              "b.IPSec",
+              "c.NAT",
+              "d.VLAN"
+          ],
+          "result": "c.NAT (Đúng)"
+      },
+      {
+          "question": "Ở hệ mật mã nào người gửi và người nhận thông điệp sử dụng cùng một khóa mã khi mã hóa và giải mã ?",
+          "answers": [
+              "a.RSA",
+              "b.Không đối xứng",
+              "c.AES-128",
+              "d.DSA"
+          ],
+          "result": "c.AES-128 (Đúng)"
+      },
+      {
+          "question": "Khi người dùng truy cập một tài nguyên mạng nào đó nhưng không thực hiện được và server luôn báo bận. Đó có thể là dấu hiệu của tấn công gì?",
+          "answers": [
+              "a.Sniffer",
+              "b.DoS",
+              "c.Spoofing",
+              "d.Social Engineering"
+          ],
+          "result": "b.DoS (Đúng)"
+      },
+      {
+          "question": "Mã độc Botnet thường tham gia vào cuộc tấn công nào sau đây?",
+          "answers": [
+              "a.DDoS",
+              "b.Jamming Attack",
+              "c.DoS",
+              "d.Relay Attack"
+          ],
+          "result": "a.DDoS (Đúng)"
+      },
+      {
+          "question": "Một quản trị viên phát hiện ra rằng, trên máy chủ hiện tại đang có một chương trình chạy vượt quá thẩm quyền được cấp phép. Đó là hiện tượng của:",
+          "answers": [
+              "a.DLL Injection",
+              "b.Máy chủ nhiễm Back door",
+              "c.Máy chủ bị tấn công DDoS",
+              "d.Máy chủ bị khai thác bởi Man-in-the-middle"
+          ],
+          "result": "b.Máy chủ nhiễm Back door (Đúng)"
+      },
+      {
+          "question": "Thiết bị nào sau đây lưu trữ thông tin về điểm đến trong một mạng?",
+          "answers": [
+              "a.Access Point",
+              "b.Hub",
+              "c.Router",
+              "d.Firewall"
+          ],
+          "result": "c.Router (Đúng)"
+      },
+      {
+          "question": "Quá trình xây dựng lại topo của mạng gọi là:",
+          "answers": [
+              "a.Liệt kê",
+              "b.Footprinting",
+              "c.Quét mạng",
+              "d.Xâm nhập mạng"
+          ],
+          "result": "c.Quét mạng (Đúng)"
+      },
+      {
+          "question": "Đâu là chức năng của mật mã học?",
+          "answers": [
+              "a.Bảo vệ tính toàn vẹn của thông tin",
+              "b.Bảo vệ tính không thể phủ nhận của thông tin",
+              "c.Bảo vệ tính bí mật của thông tin",
+              "d.Bảo vệ tính khả dụng của thông tin"
+          ],
+          "result": "c.Bảo vệ tính bí mật của thông tin (Đúng)"
+      },
+      {
+          "question": "Nếu mật khẩu được đặt với các từ đơn giản và dễ đoán như họ tên, ngày sinh, số điện thoại hoặc tên một loài vật nào đó thì có thể sẽ bị tấn công bằng hình thức nào sau đây?",
+          "answers": [
+              "a.Tấn công từ điển mã băm",
+              "b.Tấn công giả mạo",
+              "c.Tấn công brute force",
+              "d.Tấn công MITM"
+          ],
+          "result": "c.Tấn công brute force (Đúng)"
+      },
+      {
+          "question": "Phương thức tấn công nào sau đây không dựa trên bản chất của bộ giao thức TCP/IP?",
+          "answers": [
+              "a.ICMP attack",
+              "b.SYN/ACK flooding",
+              "c.Ransomware",
+              "d.Tấn công dựa trên sequence number"
+          ],
+          "result": "c.Ransomware (Đúng)"
+      },
+      {
+          "question": "Kỹ thuật tấn công sử dụng ICMP để làm sập hệ thống được gọi là:",
+          "answers": [
+              "a.Rogue",
+              "b.Man in the middle",
+              "c.Ping of the death",
+              "d.SYN flood"
+          ],
+          "result": "c.Ping of the death (Đúng)"
+      },
+      {
+          "question": "Authentication là thuật ngữ dùng để chỉ việc:",
+          "answers": [
+              "a.Theo dõi người dùng trong quá trình log on và log off",
+              "b.Xác thực người dùng khi đăng nhập vào hệ thống",
+              "c.Phân quyền người dùng khi họ đăng nhập thành công",
+              "d.Tất cả đều sai"
+          ],
+          "result": "b.Xác thực người dùng khi đăng nhập vào hệ thống (Đúng)"
+      },
+      {
+          "question": "Authorization là thuật ngữ dùng để chỉ:",
+          "answers": [
+              "a.Theo dõi người dùng trong quá trình log on và log off",
+              "b.Tất cả đều sai",
+              "c.Xác thực người dùng khi đăng nhập vào hệ thống",
+              "d.Phân quyền người dùng khi họ đăng nhập thành công"
+          ],
+          "result": "d.Phân quyền người dùng khi họ đăng nhập thành công (Đúng)"
+      },
+      {
+          "question": "Mcuj đích chính của DoS Attack là gì?",
+          "answers": [
+              "a.Phá hoại cơ sở dữ liệu",
+              "b.Mở cửa hậu cho các cuộc tấn công mã độc",
+              "c.Hạn chế khả năng cung cấp dịch vụ của server",
+              "d.Thu thập thông tin nhạy cảm của người dùng"
+          ],
+          "result": "c.Hạn chế khả năng cung cấp dịch vụ của server (Đúng)"
+      },
+      {
+          "question": "Tường lửa dạng \"Simple Packet Filtering\" hoạt động ở những lớp nào?",
+          "answers": [
+              "a.Layer 2, Layer 3",
+              "b.Layer 4, Layer 7",
+              "c.Layer 2, Layer 3, Layer 4",
+              "d.Tất cả đều sai"
+          ],
+          "result": "a.Layer 2, Layer 3 (Đúng)"
+      },
+      {
+          "question": "Thế nào là tính bảo mật của hệ thống thông tin?",
+          "answers": [
+              "a.Là đặc tính của hệ thống trong đó tất cả thông tin được lưu trữ dưới dạng mật mã",
+              "b.Tất cả đều sai",
+              "c.Là đặc tính của hệ thống trong đó thông tin được giữ bí mật không cho ai truy xuất",
+              "d.Là đặc tính của hệ thống trong đó chỉ có những người dùng được cho phép mới có thể truy xuất được thông tin"
+          ],
+          "result": "d.Là đặc tính của hệ thống trong đó chỉ có những người dùng được cho phép mới có thể truy xuất được thông tin (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng khi nói về tính bảo mật của hệ thống thông tin:",
+          "answers": [
+              "a.Tính bí mật của thông tin bao gồm tính bí mật về nội dung thông tin và tính bí mật về nguồn gốc thông tin",
+              "b.Tính bí mật của thông tin bao gồm tính bí mật về sự tồn tại của thông tin và tính bí mật nội dung thông tin",
+              "c.Tất cả đều sai",
+              "d.Một hệ thống đảm bảo tính bí mật (confidential) là một hệ thống an toàn (secure)"
+          ],
+          "result": "b.Tính bí mật của thông tin bao gồm tính bí mật về sự tồn tại của thông tin và tính bí mật nội dung thông tin (Đúng)"
+      },
+      {
+          "question": "Thế nào là tính toàn vẹn của hệ thống thông tin?",
+          "answers": [
+              "a.Là đặc tính của hệ thống trong đó thông tin không bị thay đổi, hư hỏng hay mất mát",
+              "b.Là đặc tính của hệ thống trong đó thông tin không bị thay đổi theo thời gian",
+              "c.Là đặc tính của hệ thống trong đó thông tin không bị truy xuất bởi những người không được phép",
+              "d.Là đặc tính của hệ thống trong đó thông tin không bị sửa đổi hoặc xoá bỏ bởi người sử dụng"
+          ],
+          "result": "a.Là đặc tính của hệ thống trong đó thông tin không bị thay đổi, hư hỏng hay mất mát (Đúng)"
+      },
+      {
+          "question": "Các cơ chế đảm bảo tính toàn vẹn của thông tin:",
+          "answers": [
+              "a.Tất cả các cơ chế trên",
+              "b.Gồm các cơ chế ngăn chặn và cơ chế phát hiện các vi phạm về toàn vẹn thông tin",
+              "c.Mật mã hoá toàn bộ thông tin trong hệ thống",
+              "d.Lưu toàn bộ thông tin trong hệ thống dưới dạng nén"
+          ],
+          "result": "b.Gồm các cơ chế ngăn chặn và cơ chế phát hiện các vi phạm về toàn vẹn thông tin (Đúng)"
+      },
+      {
+          "question": "Thế nào là tính khả dụng của hệ thống thông tin?",
+          "answers": [
+              "a.Là tính sẵn sàng của thông tin trong hệ thống cho mọi nhu cầu truy xuất",
+              "b.Tất cả đều sai",
+              "c.Là tính dễ sử dụng của thông tin trong hệ thống",
+              "d.Là tính sẵn sàng của thông tin trong hệ thống cho các nhu cầu truy xuất hợp lệ"
+          ],
+          "result": "d.Là tính sẵn sàng của thông tin trong hệ thống cho các nhu cầu truy xuất hợp lệ (Đúng)"
+      },
+      {
+          "question": "Nguy cơ nào sau đây có thể ảnh hưởng đến tính khả dụng của hệ thống thông tin?",
+          "answers": [
+              "a.Thiết bị không an toàn",
+              "b.Virus và các loại phần mềm phá hoại khác trên máy tính",
+              "c.Tất cả đều đúng",
+              "d.Các tấn công từ chối dịch vụ (DoS và DDoS)"
+          ],
+          "result": "d.Các tấn công từ chối dịch vụ (DoS và DDoS) (Sai)"
+      },
+      {
+          "question": "Chọn đáp án sai khi nói về các nguy cơ đối với sự an toàn của hệ thống mạng?",
+          "answers": [
+              "a.Những kẻ tấn công hệ thống (attacker) có thể là con người bên trong hệ thống",
+              "b.Một hệ thống không kết nối vào mạng Internet thì không có các nguy cơ tấn công",
+              "c.Xâm nhập hệ thống (intrusion) có thể là hành vi xuất phát từ bên ngoài hoặc từ bên trong hệ thống",
+              "d.Người sử dụng không được huấn luyện về an toàn hệ thống cũng là một nguy cơ đối với hệ thống"
+          ],
+          "result": "b.Một hệ thống không kết nối vào mạng Internet thì không có các nguy cơ tấn công (Đúng)"
+      },
+      {
+          "question": "Nguyên tắc xây dựng một hệ thống bảo mật?",
+          "answers": [
+              "a.Xây dựng các chính sách an toàn chặt chẽ",
+              "b.Áp dụng các cơ chế an toàn phù hợp với hệ thống",
+              "c.Tất cả đều đúng",
+              "d.Xây dựng chính sách bảo mật và triển khai các cơ chế để đảm bảo chính sách đó"
+          ],
+          "result": "d.Xây dựng chính sách bảo mật và triển khai các cơ chế để đảm bảo chính sách đó (Đúng)"
+      },
+      {
+          "question": "Mục tiêu của an tòan hệ thống theo thứ tự ưu tiên giảm dần:",
+          "answers": [
+              "a.Phát hiện và ngăn chặn",
+              "b.Ngăn chặn, phát hiện, phục hồi",
+              "c.Phát hiện và phục hồi",
+              "d.Phát hiện, ngăn chặn, phục hồi"
+          ],
+          "result": "b.Ngăn chặn, phát hiện, phục hồi (Đúng)"
+      },
+      {
+          "question": "Các cơ chế xác thực thông dụng trong hệ thống thông tin?",
+          "answers": [
+              "a.Tất cả đều đúng",
+              "b.Dùng user-name/password",
+              "c.Dùng các cơ chế quản lý truy xuất tập tin trên đĩa cứng",
+              "d.Dùng cơ chế phân quyền cho người sử dụng"
+          ],
+          "result": "a.Tất cả đều đúng (Sai)"
+      },
+      {
+          "question": "Các giao thức xác thực thông dụng trong hệ thống thông tin?",
+          "answers": [
+              "a.Kerberos",
+              "b.Tất cả đều sai",
+              "c.Tất cả đều đúng",
+              "d.CHAP"
+          ],
+          "result": "c.Tất cả đều đúng (Đúng)"
+      },
+      {
+          "question": "Chức năng của cơ chế kiểm tra (auditing) trên hệ thống là gì?",
+          "answers": [
+              "a.Cung cấp thông tin để phục hồi hệ thống khi có sự cố",
+              "b.Cung cấp thông tin làm chứng cứ cho các hành vi vi phạm chính sách an toàn hệ thống",
+              "c.Theo dõi và ghi nhận các sự kiện và hành vi diễn ra trên hệ thống",
+              "d.Ghi lại (Logger), phân tích (Analyzer) và thông báo (Notifier)"
+          ],
+          "result": "c.Theo dõi và ghi nhận các sự kiện và hành vi diễn ra trên hệ thống (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng trong các câu sau:",
+          "answers": [
+              "a.Có thể ngăn chặn các tấn công tràn bộ đệm bằng cách cài đặt chính sách tường lửa hợp lý",
+              "b.Nguyên lý hoạt động của ngôn ngữ C là lý do khiến các phần mềm viết bằng C đều bị lỗi tràn bộ đệm",
+              "c.Có thể ngăn chặn các tấn công tràn bộ đệm (buffer overflow) bằng các phần mềm quét lỗ hỏng",
+              "d.Lỗi tràn bộ đệm chỉ xảy ra trên các phần mềm có nhập liệu từ người dùng"
+          ],
+          "result": "a.Có thể ngăn chặn các tấn công tràn bộ đệm bằng cách cài đặt chính sách tường lửa hợp lý (Sai)"
+      },
+      {
+          "question": "Một máy tính nghe lén thông tin trên mạng và dùng các thông tin này để xâm nhập trái phép vào một hệ thống thông tin, đây là phương thức tấn công nào?",
+          "answers": [
+              "a.Man-in-the-Middle",
+              "b.Replay",
+              "c.Spoofing",
+              "d.Sniffing"
+          ],
+          "result": "d.Sniffing (Đúng)"
+      },
+      {
+          "question": "Chọn đáp án đúng khi nói về các phương thức tấn công bằng mã độc?",
+          "answers": [
+              "a.Trojan horse là một loại phần mềm độc nhưng có tên giống như các tập tin bình thường",
+              "b.Virus có thể tự sao chép và lan truyền thông qua mạng máy tính",
+              "c.Worm là loại phần mềm độc hoạt động dựa vào một phần mềm khác",
+              "d.Logic bomb không thể phá hoại hệ thống nếu đồng hồ hệ thống luôn chậm hơn thời gian hiện hành"
+          ],
+          "result": "a.Trojan horse là một loại phần mềm độc nhưng có tên giống như các tập tin bình thường (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng khi nói về tường lửa?",
+          "answers": [
+              "a.Tất cả các gói dữ liệu đi qua tường lửa đều phải chấp nhận hiển thị toàn bộ nội dung, nhờ đó tường lửa mới có cơ sở để phân biệt các tấn công với các loại lưu lượng khác",
+              "b.Nếu mở tất cả các cổng (port) trên firewall thì firewall sẽ hoàn toàn bị vô hiệu hoá",
+              "c.Tất cả đều đúng",
+              "d.Tường lửa chỉ có thể ngăn chặn các tấn công từ bên ngoài hệ thống"
+          ],
+          "result": "b.Nếu mở tất cả các cổng (port) trên firewall thì firewall sẽ hoàn toàn bị vô hiệu hoá (Sai)"
+      },
+      {
+          "question": "Nguyên lý hoạt động của IDS?",
+          "answers": [
+              "a.Phân tích các gói dữ liệu lưu thông trên mạng để tìm dấu hiện của tấn công",
+              "b.Phân tích các dữ liệu trong nhật ký hệ thống (system log) để phát hiện dấu hiệu của tấn công",
+              "c.Tất cả đều đúng",
+              "d.Duy trì một cơ sở dữ liệu về các dấu hiệu tấn công (signature database)"
+          ],
+          "result": "b.Phân tích các dữ liệu trong nhật ký hệ thống (system log) để phát hiện dấu hiệu của tấn công (Sai)"
+      },
+      {
+          "question": "Chọn câu đúng khi nói về IDS?",
+          "answers": [
+              "a.IDS là một ứng dụng có chức năng phát hiện và ngăn chặn các tấn công vào hệ thống thông tin",
+              "b.Signature-based IDS có khả năng phát hiện các tấn công mới, chưa từng được mô tả trong cơ sở dữ liệu",
+              "c.Network-based IDS không có khả năng phát hiện tấn công vào một máy chủ cụ thể",
+              "d.Tất cả đều sai"
+          ],
+          "result": "d.Tất cả đều sai (Đúng)"
+      },
+      {
+          "question": "Một hệ thống mật mã thường đối diện với các nguy cơ nào sau đây?",
+          "answers": [
+              "a.Tấn công từ chối dịch vụ",
+              "b.Tấn công bằng phương pháp phân tích mã (crypanalysis)",
+              "c.A và B đúng",
+              "d.Tấn công bằng cách dò khoá bí mật (brute force attack)"
+          ],
+          "result": "c.A và B đúng (Đúng)"
+      },
+      {
+          "question": "Cơ chế trao đổi khoá bí mật trong mã hoá đối xứng giữa A và B?",
+          "answers": [
+              "a.A và B trao đổi khoá với nhau bằng một phương tiện vật lý",
+              "b.A gởi khoá bí mật cho một thực thể thứ 3 bằng e-mail, thự cthể thứ 3 này sẽ gởi lại khoá này cho B cũng bằng e- mail",
+              "c.Một trong 3 cách trên đều được",
+              "d.A và B trao đổi khoá với nhau bằng e- mail"
+          ],
+          "result": "a.A và B trao đổi khoá với nhau bằng một phương tiện vật lý (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng khi nói về cấu trúc mật mã Feistel?",
+          "answers": [
+              "a.Tất cả các thao tác trong cấu trúc đều có thao tác ngược tương ứng",
+              "b.Mạch mã hoá và mạch giải mã có cấu trúc khác nhau",
+              "c.Kích thước khối dữ liệu (block size) là bất kỳ",
+              "d.Cấu trúc Feistel dựa trên các thao tác xử lý bit với các phép hoán vị và thay thế lặp lại nhiều lần"
+          ],
+          "result": "d.Cấu trúc Feistel dựa trên các thao tác xử lý bit với các phép hoán vị và thay thế lặp lại nhiều lần (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng khi nói về thuật toán mật mã DES?",
+          "answers": [
+              "a.S-box là một hàm hoán vị, cho kết quả ngược lại với phép hoán vị IP",
+              "b.Mạch mã hoá và mạch giải mã là giống nhau",
+              "c.Thao tác hoán vị PC-1 được thực hiện 16 lần trong quá trình mã hoá và giải mã",
+              "d.Thứ tự sinh khoá phụ ở quá trình mã hoá và giải mã là giống nhau"
+          ],
+          "result": "b.Mạch mã hoá và mạch giải mã là giống nhau (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng về độ an toàn của mã hóa DES?",
+          "answers": [
+              "a.Tất cả đều đúng",
+              "b.Chỉ có thể tấn công hệ thống mật mã DES bằng phương pháp brute force",
+              "c.Khoá đưa vào thuật toán là 64 bit, nhưng thực chất chỉ sử dụng 56 bit",
+              "d.Mạch giải mã TDES không thể giải mã được thông tin mã hoá bởi DES"
+          ],
+          "result": "c.Khoá đưa vào thuật toán là 64 bit, nhưng thực chất chỉ sử dụng 56 bit (Đúng)"
+      },
+      {
+          "question": ". Chọn câu đúng khi nói về chuẩn mật mã AES?",
+          "answers": [
+              "a.Là chuẩn mật mã được thiết kế để làm việc song song với DES",
+              "b.Kích thước khối và chiều dài khoá có thể thay đổi được",
+              "c.Mạch mã hoá và mạch giải mã hoàn toàn giống nhau",
+              "d.Tất cả đều đúng"
+          ],
+          "result": "b.Kích thước khối và chiều dài khoá có thể thay đổi được (Đúng)"
+      },
+      {
+          "question": "Chọn phát biểu sai khi nói về chuẩn mật mã AES?",
+          "answers": [
+              "a.Thứ tự sinh khoá phụ trong quá trình mã hoá và giải mã hoàn toàn giống nhau",
+              "b.Tất cả các thao tác trong thuật toán đều có thao tác ngược",
+              "c.AES không dựa trên cấu trúc mã khối Feistel",
+              "d.Thuật toán mã Rijndael chính là AES"
+          ],
+          "result": "a.Thứ tự sinh khoá phụ trong quá trình mã hoá và giải mã hoàn toàn giống nhau (Đúng)"
+      },
+      {
+          "question": "Ứng dụng của mật mã bất đối xứng là gì?",
+          "answers": [
+              "a.Bảo mật thông tin",
+              "b.Xác thực thông tin",
+              "c.Bảo vệ tính khả dụng của hệ thống",
+              "d.A và B đều đúng"
+          ],
+          "result": "d.A và B đều đúng (Đúng)"
+      },
+      {
+          "question": "Chọn câu đúng về thuật toán mã RSA",
+          "answers": [
+              "a.- Chỉ có thể dùng khoá công khai để mã hoá thông tin, không thể mã hoá thông tin bằng khoá bí mật",
+              "b.RSA dùng khoá và khối dữ liệu có kích thước cố định",
+              "c.Thuật toán RSA thích hợp cho thực thi bằng phần cứng",
+              "d.Mỗi khối thông tin n bit đưa vào thuật toán RSA được xử lý như một số nguyên có giá trị từ 0 đến 2n - 1"
+          ],
+          "result": "d.Mỗi khối thông tin n bit đưa vào thuật toán RSA được xử lý như một số nguyên có giá trị từ 0 đến 2n - 1 (Đúng)"
+      },
+      {
+          "question": "Đáp án nào sau đây đúng khi so sánh RSA và DES:",
+          "answers": [
+              "a.RSA an toàn hơn DES",
+              "b.RSA dựa trên các hàm toán học, còn DES dựa trên các thao tác xử lý bit",
+              "c.RSA có tốc độ thực thi bằng phần mềm cao hơn DES",
+              "d.Bằng cách phân tích khoá công khai thì có thể tìm ra khoá bí mật của RSA, trong khi đối với DES, cách duy nhất để tìm khoá là thử lần lượt"
+          ],
+          "result": "b.RSA dựa trên các hàm toán học, còn DES dựa trên các thao tác xử lý bit (Đúng)"
+      },
+      {
+          "question": "Các thuộc tính của một giải thuật chữ ký số là gì?",
+          "answers": [
+              "a.Phải xác nhận chính xác người ký và ngày giờ phát sinh chữ ký",
+              "b.Tất cả đều đúng",
+              "c.Phải có khả năng cho phép kiểm chứng bởi một người thứ 3 để giải quyết các tranh chấp nếu có",
+              "d.Phải xác thực nội dung thông tin ngay tại thời điểm phát sinh chữ ký"
+          ],
+          "result": "b.Tất cả đều đúng (Đúng)"
+      },
+      {
+          "question": "Các thông tin cần thiết để tạo ra chữ lý số là gì?",
+          "answers": [
+              "a.Khoá công khai của nhóm",
+              "b.Mã băm của thông tin cần chứng thực",
+              "c.Tất cả các thông tin trên",
+              "d.Khoá bí mật của người ký"
+          ],
+          "result": "a.Khoá công khai của nhóm (Sai)"
+      },
+      {
+          "question": "Chứng thực khóa (certificate) là gì?",
+          "answers": [
+              "a.Tất cả đều đúng",
+              "b.Chứng thực khóa là một dạng của chữ ký số",
+              "c.Là một sự chứng thực của một thực thể được tin cậy về sự ràng buộc giữa một thực thể thông tin và khoá công khai của thực thể đó",
+              "d.Chứng thực khóa là một ứng dụng để phân phối khoá bí mật trong mật mã đối xứng"
+          ],
+          "result": "a.Tất cả đều đúng (Sai)"
+      },
+      {
+          "question": "Ứng dụng của IPSec là gì?",
+          "answers": [
+              "a.Xây dựng các mạng riêng ảo VPN trên nền mạng Internet công cộng",
+              "b.Tất cả đều đúng",
+              "c.Xây dựng các website an toàn cho các ứng dụng thương mại điện tử",
+              "d.Cho phép truy xuất từ xa một cách an toàn"
+          ],
+          "result": "b.Tất cả đều đúng (Đúng)"
+      },
+      {
+          "question": "Điều nào sau đây đúng khi nói về IPSec?",
+          "answers": [
+              "a.IPSec có thể được thực hiện như một phần mềm ứng dụng",
+              "b.Khi cài đặt IPSec trên một hệ thống thì IPSec sẽ có tác dụng bảo vệ cho tất cả các dịch vụ ứng dụng chạy trên hệ thống đó",
+              "c.Khi sử dụng IPSec, kích thước gói dữ liệu IP tăng lên, do đó hiệu suất truyền giảm xuống",
+              "d.A và B đúng"
+          ],
+          "result": "b.Khi cài đặt IPSec trên một hệ thống thì IPSec sẽ có tác dụng bảo vệ cho tất cả các dịch vụ ứng dụng chạy trên hệ thống đó (Đúng)"
+      },
+      {
+          "question": "Đặc điểm của SSL là gì?",
+          "answers": [
+              "a.Cung cấp kết nối an toàn cho tất cả các dịch vụ ứng dụng trên cùng một hệ thống",
+              "b.Là thành phần của Hệ điều hành",
+              "c.Sử dụng mật mã đối xứng để mã hoá dữ liệu",
+              "d.Tất cả các đặc điểm trên"
+          ],
+          "result": "a.Cung cấp kết nối an toàn cho tất cả các dịch vụ ứng dụng trên cùng một hệ thống (Sai)"
+      },
+      {
+          "question": "Chức năng của hệ thống Honeypot là gì?",
+          "answers": [
+              "a.Ngăn chặn tấn công của Hacker",
+              "b.Giả lập các hệ thống/dịch vụ thật để đánh lừa Hacker",
+              "c.Xóa bỏ dấu vết các cuộc tấn công",
+              "d.Truy vết Hacker"
+          ],
+          "result": "b.Giả lập các hệ thống/dịch vụ thật để đánh lừa Hacker (Đúng)"
+      },
+      {
+          "question": "Loại KeyLogger nào có thể tránh được sự phát hiện của các phần mềm Anti-Virus?",
+          "answers": [
+              "a.Hardware Keylogger",
+              "b.Stealth Keylogger",
+              "c.Perfect Keylogger",
+              "d.Software Keylogger"
+          ],
+          "result": "d.Software Keylogger (Sai)"
+      },
+      {
+          "question": "Công cụ “Whois” dùng để làm gì?",
+          "answers": [
+              "a.Truy vấn thông tin domain",
+              "b.Tấn công từ chối dịch vụ vào Target",
+              "c.Truy vấn thông tin cá nhân",
+              "d.Tất cả đều đúng"
+          ],
+          "result": "a.Truy vấn thông tin domain (Đúng)"
+      },
+      {
+          "question": "Hệ thống IDS phát hiện dấu hiệu tấn công dựa vào:",
+          "answers": [
+              "a.IP nguồn được định nghĩa trước",
+              "b.Signature",
+              "c.IP đích được định nghĩa trước",
+              "d.IP nguồn và IP đích"
+          ],
+          "result": "c.IP đích được định nghĩa trước (Sai)"
+      },
+      {
+          "question": "Biện pháp nào sau đây được dùng để đảm bảo độ an toàn cho mạng Wi-Fi?",
+          "answers": [
+              "a.HTTPS",
+              "b.SSL",
+              "c.WEB",
+              "d.WPA2"
+          ],
+          "result": "d.WPA2 (Đúng)"
+      },
+      {
+          "question": "Tấn công DoS nào sau đây dựa trên cơ chế three-way handshake của TCP?",
+          "answers": [
+              "a.SYN Flood",
+              "b.Password",
+              "c.Buffer Overflow",
+              "d.Ping of Death"
+          ],
+          "result": "a.SYN Flood (Đúng)"
+      },
+      {
+          "question": "Đâu là mục tiêu chủ yếu của kiểu tấn công Social Engineering?",
+          "answers": [
+              "a.Email",
+              "b.Local Area Network",
+              "c.Con người",
+              "d.Peer to Peer Network"
+          ],
+          "result": "c.Con người (Đúng)"
+      },
+      {
+          "question": "Kỹ thuật chèn vào các website động những đoạn mã script nguy hiểm là tấn công gì?",
+          "answers": [
+              "a.CSRF",
+              "b.XSS",
+              "c.SQL Injection",
+              "d.CSS"
+          ],
+          "result": "b.XSS (Đúng)"
+      },
+      {
+          "question": "Tấn công SQL Injection cho phép kẻ tấn công:",
+          "answers": [
+              "a.Lợi dụng các cổng mở của dịch vụ đang chạy",
+              "b.Lợi dụng cơ chế sniffer",
+              "c.Lợi dụng lỗ hổng trong kiểm tra dữ liệu nhập vào các ứng dụng",
+              "d.Lợi dụng kỹ thuật chặn bắt gói tin"
+          ],
+          "result": "c.Lợi dụng lỗ hổng trong kiểm tra dữ liệu nhập vào các ứng dụng (Đúng)"
+      },
+      {
+          "question": "Trong tấn công web, Local attack là kiểu tấn công gì?",
+          "answers": [
+              "a.Tấn công trong mạng nội bộ",
+              "b.Từ một Website kiểm soát các website khác trên máy chủ",
+              "c.APR Spoofing",
+              "d.Chặn bắt gói tin trong mạng LAN"
+          ],
+          "result": "b.Từ một Website kiểm soát các website khác trên máy chủ (Đúng)"
+      },
+      {
+          "question": "Máy chủ Windows Server bị hacker tạo tài khoản có quyền quản trị và đăng nhập qua remote desktop. Dấu vết của sự kiện này có thể được phát hiện thông qua?",
+          "answers": [
+              "a.Log của FTP Server",
+              "b.Log của SQL Server",
+              "c.Log của Web Server",
+              "d.Event Viewer"
+          ],
+          "result": "a.Log của FTP Server (Sai)"
+      },
+      {
+          "question": "Khi một website tồn tại lỗ hổng SQL Injection, nguy cơ cao nhất có thể xảy ra là:",
+          "answers": [
+              "a.Tấn công thay đổi hình ảnh giao diện",
+              "b.Máy chủ bị chiếm quyền điều khiển",
+              "c.Xóa toàn bộ cơ sở dữ liệu",
+              "d.Mất username/password của quản trị"
+          ],
+          "result": "d.Mất username/password của quản trị (Sai)"
+      }
+  ]
+    function onChange(event) {
+      var result = test.filter(item => {
+        return item.question.includes(event.value)
+      })[0]
+      if (result) {
+        document.getElementById('question').innerText = result.question
+        document.getElementById('answer').innerText = result.result
+      } else {
+        document.getElementById('question').innerText = 'Không thấy'
+        document.getElementById('answer').innerText = 'Không thấy'
+      }
+    }
+  </script>
+</body>
+</html>
